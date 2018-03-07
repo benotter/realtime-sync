@@ -1,4 +1,4 @@
-export namespace SafeJSON 
+export namespace U_SafeJSON
 {
     export function parse<T = any>( str: string, def: T | null = null ): T | null
     {

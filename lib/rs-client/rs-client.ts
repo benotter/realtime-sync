@@ -1,12 +1,9 @@
-import 
-{
-    CONST,
-    RSUserClient,
-} from '../lib';
+import { RS_C_UserClient } from './rs-client-user';
+import * as CONST from '../const';
 
 export class RSClient 
 {
-    public user: RSUserClient = new RSUserClient( this.userName );
+    public user: RS_C_UserClient = new RS_C_UserClient( this.userName );
 
     public joined: boolean = false;
 

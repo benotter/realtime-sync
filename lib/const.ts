@@ -19,3 +19,13 @@ export namespace LOG
     export const SERVER_STOP = "";
     export const SERVER_ERROR = "";
 }
+
+export namespace STRING 
+{
+    export const ERROR = {
+        JOIN_USER_ID_EXISTS: "",
+        USERID_ID_DOESNT_MATCH: "",
+
+        USERCLIENT_ALREADY_CONNECTED: "",
+    };
+}

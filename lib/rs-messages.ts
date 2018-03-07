@@ -1,5 +1,6 @@
-import { RSFile } from './lib'
-export enum RSClientMessageType 
+import { RS_C_File } from "./rs-file-base";
+
+export enum RS_E_ClientMessageType 
 {
     Base,
     Leave_Report,
@@ -10,9 +11,9 @@ export enum RSClientMessageType
     UpdateFile_Request,
 }
 
-export namespace RSMessages_C 
+export namespace RS_N_Messages_C
 {
-    export interface Base { type: RSClientMessageType }
+    export interface Base { type: RS_E_ClientMessageType }
 
     export interface LeaveReport extends Base
     {
@@ -28,8 +29,8 @@ export namespace RSMessages_C
     export interface AddFileRequest extends Base
     {
         userID: string;
-        file?: RSFile;
-        files?: RSFile[];
+        file?: RS_C_File;
+        files?: RS_C_File[];
         parentID?: string;
     }
 
@@ -47,7 +48,7 @@ export namespace RSMessages_C
     }
 }
 
-export enum RSServerMessageType 
+export enum RS_E_ServerMessageType 
 {
     Base,
 
@@ -63,9 +64,9 @@ export enum RSServerMessageType
     Blast_FileUpdated,
 }
 
-export namespace RSMessages_S 
+export namespace RS_N_Messages_S 
 {
-    export interface Base { type: RSServerMessageType }
+    export interface Base { type: RS_E_ServerMessageType }
 
     export interface JoinResponse extends Base
     {
@@ -85,4 +86,3 @@ export namespace RSMessages_S
     export interface Blast_OnFileRemoved extends Base { }
     export interface Blast_OnFileUpdated extends Base { }
 }
-
