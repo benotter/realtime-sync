@@ -1,0 +1,31 @@
+{
+  "name": "@otter-co/realtime-sync",
+  "version": "0.0.1",
+  "description": "Realtime-Sync Library",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "install": "npm run build",
+    "build": "tsc -p .",
+    "build-watch": "tsc -w -p .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benotter/realtime-sync.git"
+  },
+  "author": "Ben Otter <benotter@me.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/benotter/realtime-sync/issues"
+  },
+  "homepage": "https://github.com/benotter/realtime-sync#readme",
+  "dependencies": {
+    "@types/node": "^7.0.43",
+    "@types/uuid": "^3.4.3",
+    "typescript": "^2.7.2",
+    "uuid": "^3.2.1"
+  }
+}
