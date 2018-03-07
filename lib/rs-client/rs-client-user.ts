@@ -85,34 +85,34 @@ export class RS_C_UserClient extends RS_C_UserBase
 }
 
 declare class RSUserClient 
-    {
-        emit ( event: 'error', data: Error ): boolean;
-        on ( event: 'error', listener: ( data: Error ) => void ): this;
+{
+    emit ( event: 'error', data: Error ): boolean;
+    on ( event: 'error', listener: ( data: Error ) => void ): this;
 
-        on ( event: "join-response", listener: ( mess: RS_N_Messages_S.JoinResponse ) => void ): this;
-        emit ( event: "join-response", data: RS_N_Messages_S.JoinResponse ): boolean;
+    on ( event: "join-response", listener: ( mess: RS_N_Messages_S.JoinResponse ) => void ): this;
+    emit ( event: "join-response", data: RS_N_Messages_S.JoinResponse ): boolean;
 
-        on ( event: "add-file-response", listener: ( mess: RS_N_Messages_S.AddFileReponse ) => void ): this;
-        emit ( event: "add-file-response", data: RS_N_Messages_S.AddFileReponse ): boolean;
+    on ( event: "add-file-response", listener: ( mess: RS_N_Messages_S.AddFileReponse ) => void ): this;
+    emit ( event: "add-file-response", data: RS_N_Messages_S.AddFileReponse ): boolean;
 
-        on ( event: "rem-file-response", listener: ( mess: RS_N_Messages_S.RemFileResponse ) => void ): this;
-        emit ( event: "rem-file-response", data: RS_N_Messages_S.RemFileResponse ): boolean;
+    on ( event: "rem-file-response", listener: ( mess: RS_N_Messages_S.RemFileResponse ) => void ): this;
+    emit ( event: "rem-file-response", data: RS_N_Messages_S.RemFileResponse ): boolean;
 
-        on ( event: "update-file-response", listener: ( mess: RS_N_Messages_S.UpdateFileResponse ) => void ): this;
-        emit ( event: "update-file-response", data: RS_N_Messages_S.UpdateFileResponse ): boolean;
+    on ( event: "update-file-response", listener: ( mess: RS_N_Messages_S.UpdateFileResponse ) => void ): this;
+    emit ( event: "update-file-response", data: RS_N_Messages_S.UpdateFileResponse ): boolean;
 
-        on ( event: "blast-on-join", listener: ( mess: RS_N_Messages_S.Blast_OnJoin ) => void ): this;
-        emit ( event: "blast-on-join", data: RS_N_Messages_S.Blast_OnJoin ): boolean;
+    on ( event: "blast-on-join", listener: ( mess: RS_N_Messages_S.Blast_OnJoin ) => void ): this;
+    emit ( event: "blast-on-join", data: RS_N_Messages_S.Blast_OnJoin ): boolean;
 
-        on ( event: "blast-on-leave", listener: ( mess: RS_N_Messages_S.Blast_OnLeave ) => void ): this;
-        emit ( event: "blast-on-leave", data: RS_N_Messages_S.Blast_OnLeave ): boolean;
+    on ( event: "blast-on-leave", listener: ( mess: RS_N_Messages_S.Blast_OnLeave ) => void ): this;
+    emit ( event: "blast-on-leave", data: RS_N_Messages_S.Blast_OnLeave ): boolean;
 
-        on ( event: "blast-file-added", listener: ( mess: RS_N_Messages_S.Blast_OnFileAdded ) => void ): this;
-        emit ( event: "blast-file-added", data: RS_N_Messages_S.Blast_OnFileAdded ): boolean;
+    on ( event: "blast-file-added", listener: ( mess: RS_N_Messages_S.Blast_OnFileAdded ) => void ): this;
+    emit ( event: "blast-file-added", data: RS_N_Messages_S.Blast_OnFileAdded ): boolean;
 
-        on ( event: "blast-file-removed", listener: ( mess: RS_N_Messages_S.Blast_OnFileRemoved ) => void ): this;
-        emit ( event: "blast-file-removed", data: RS_N_Messages_S.Blast_OnFileRemoved ): boolean;
+    on ( event: "blast-file-removed", listener: ( mess: RS_N_Messages_S.Blast_OnFileRemoved ) => void ): this;
+    emit ( event: "blast-file-removed", data: RS_N_Messages_S.Blast_OnFileRemoved ): boolean;
 
-        on ( event: "blast-file-updated", listener: ( mess: RS_N_Messages_S.Blast_OnFileUpdated ) => void ): this;
-        emit ( event: "blast-file-updated", data: RS_N_Messages_S.Blast_OnFileUpdated ): boolean;
-    }
+    on ( event: "blast-file-updated", listener: ( mess: RS_N_Messages_S.Blast_OnFileUpdated ) => void ): this;
+    emit ( event: "blast-file-updated", data: RS_N_Messages_S.Blast_OnFileUpdated ): boolean;
+}

@@ -21,7 +21,7 @@ export class RS_C_UserBase extends EventEmitter
     )
     { super() }
 
-    public connect( port: number, host?: string ) 
+    public connect ( port: number, host?: string ) 
     {
         this.socket.connect( port, host );
     }
@@ -31,5 +31,5 @@ export class RS_C_UserBase extends EventEmitter
         this.socket.write( U_SafeJSON.stringify( sendObj ) );
     }
 
-    public handleMessage(mess: any) {}
+    public handleMessage ( mess: any ) { }
 }
