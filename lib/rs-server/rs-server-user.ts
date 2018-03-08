@@ -14,24 +14,13 @@ export class RS_C_UserServer
     constructor ( socket: net.Socket )
     {
         super();
+
         this.socket = socket;
 
-        let closeEndFunc = () =>
-        {
-            if ( !this.disconnected )
-            {
-                this.disconnected = true;
-                this.emit( 'leave-report', {
-                    type: RS_E_ClientMessageType.Leave_Report,
-                    userID: this.id,
-                } as RS_N_Messages_C.LeaveReport );
-            }
-        };
-
         socket
-            .on( 'error', ( err ) => this.emit( 'error', err ) )
-            .on( 'close', closeEndFunc )
-            .on( 'end', closeEndFunc )
+            .on( 'error', ( err ) => this.onError( err ) )
+            .on( 'close', () => this.onCloseEnd() )
+            .on( 'end', () => this.onCloseEnd() )
             .on( 'data', ( data ) =>
             {
                 let datStr = data.toString( 'utf-8' );
@@ -40,6 +29,30 @@ export class RS_C_UserServer
 
                 this.handleMessage( datO );
             } );
+    }
+
+    private onError ( err: Error | Error & { code: string } )
+    {
+        if ( err.hasOwnProperty( 'code' ) )
+            switch ( ( err as Error & { code: string } ).code ) 
+            {
+                case 'ECONNRESET':
+                    return this.onCloseEnd();
+            }
+
+        this.emit( 'error', err );
+    }
+
+    private onCloseEnd ()
+    {
+        if ( !this.disconnected )
+        {
+            this.disconnected = true;
+            this.emit( 'leave-report', {
+                type: RS_E_ClientMessageType.Leave_Report,
+                userID: this.id,
+            } as RS_N_Messages_C.LeaveReport );
+        }
     }
 
     public handleMessage ( mess: RS_N_Messages_C.Base ): boolean

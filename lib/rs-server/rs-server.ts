@@ -1,5 +1,6 @@
 import * as net from 'net';
 import { EventEmitter } from 'events';
+import { U_SafeJSON, U_MessageBuilder_S as sMB } from '../util';
 import
 {
     RS_E_ServerMessageType,
@@ -21,12 +22,6 @@ export class RS_C_Server extends EventEmitter
     public fileList: RS_C_File[] = [];
 
     constructor (
-        public log: {
-            info: ( str: string ) => any,
-            warn: ( str: string ) => any,
-            error: ( str: any ) => any
-        } = { info: () => { }, warn: () => { }, error: () => { }, },
-
         public port: number = CONST.NETWORK.DEFAULT_PORT,
         public host?: string,
     )
@@ -51,15 +46,11 @@ export class RS_C_Server extends EventEmitter
                 rej( err );
                 this.server.removeListener( 'error', listenErrFunc );
             };
-            this.server.once( 'error', listenErrFunc );
 
-            this.server.on( 'listening', () =>
-            {
-                this.log.info( CONST.LOG.SERVER_START );
-                res( true );
-            } );
-
-            this.server.listen( this.port, this.host );
+            this.server
+                .once( 'error', listenErrFunc )
+                .on( 'listening', () => res( true ) )
+                .listen( this.port, this.host );
         } );
     }
 
@@ -82,14 +73,15 @@ export class RS_C_Server extends EventEmitter
 
     private handleError ( err: Error )
     {
-        this.log.error( err );
+        this.emit( 'error', err );
     }
 
     private handleNewUser ( soc: net.Socket ) 
     {
         let newUser = new RS_C_UserServer( soc );
+
         newUser
-            .on( 'error', err => this.log.error( err ) )
+            .on( 'error', err => this.handleError( err ) )
             .on( 'join-request', ( mess ) => this.onJoinRequest( newUser, mess ) );
     }
 
@@ -97,11 +89,12 @@ export class RS_C_Server extends EventEmitter
     {
         if ( this.userList.find( u => u.id === mess.userID ) )
         {
-            return user.send( {
-                type: RS_E_ServerMessageType.Join_Response,
-                success: false,
-                message: CONST.STRING.ERROR.JOIN_USER_ID_EXISTS
-            } as RS_N_Messages_S.JoinResponse );
+            return user.send( sMB.JoinResponse(
+                false, 
+                void 0, 
+                void 0,
+                CONST.STRING.ERROR.JOIN_USER_ID_EXISTS
+            ));
         }
 
         user
@@ -124,18 +117,22 @@ export class RS_C_Server extends EventEmitter
 
         this.userList.push( user );
 
-        return user.send( {
-            type: RS_E_ServerMessageType.Join_Response,
-            success: true,
-            serverName: "rs-server",
-            userList: this.userList.map( u => u.userName ),
-        } as RS_N_Messages_S.JoinResponse );
+        this.emit( 'user-join', user );
+
+        return user.send( sMB.JoinResponse(
+            true,
+            '',
+            this.userList.map( u => ({ userID: u.id, userName: u.userName }) )
+        ) );
     }
 
     public onLeaveReport ( user: RS_C_UserServer ) 
     {
         this.userList = this.userList.filter( u => u.id !== user.id );
+
+        this.emit( 'user-leave', user );
     }
+
     public onAddFileReq ( user: RS_C_UserServer, mess: RS_N_Messages_C.AddFileRequest ) 
     {
         let { userID, file = null, files = null, parentID = null, } = mess;
@@ -169,6 +166,9 @@ export class RS_C_Server extends EventEmitter
 
 export declare interface RS_C_Server 
 {
+    emit ( event: "error", error: Error ): boolean;
+    on ( event: "error", listener: ( error: Error ) => void ): this;
+
     emit ( event: "user-join", data: any ): boolean;
     on ( event: "user-join", listener: ( data: any ) => void ): this;
 

@@ -1,7 +1,8 @@
+import * as nCONST from 'constants';
 import { EventEmitter } from 'events';
-import { U_SafeJSON, } from '../util';
+import { U_SafeJSON, U_MessageBuilder_C as cMB } from '../util';
 import { RS_C_UserBase, RS_T_UserID, } from '../rs-user-base';
-import { RS_E_ClientMessageType, RS_E_ServerMessageType, RS_N_Messages_S } from '../rs-messages';
+import { RS_E_ClientMessageType, RS_E_ServerMessageType, RS_N_Messages_S, RS_N_Messages_C } from '../rs-messages';
 import * as CONST from '../const';
 
 export class RS_C_UserClient
@@ -12,6 +13,15 @@ export class RS_C_UserClient
     constructor ( userName: string, id: string | void = void 0 )
     {
         super( userName, false, void 0, id as string );
+
+        this.socket
+            // Set up Event listeners
+            .on( 'error', ( err ) => this.onError( err ) )
+            .on( 'connect', () => this.onConnect() )
+            .on( 'close', () => this.onEndClose() )
+            .on( 'end', () => this.onEndClose() )
+            .on( 'data', ( data ) => this.onData( data ) )
+
     }
 
     public join ( host: string, port: number )
@@ -21,25 +31,23 @@ export class RS_C_UserClient
             if ( this.connected )
                 return rej( new Error( CONST.STRING.ERROR.USERCLIENT_ALREADY_CONNECTED ) );
 
-            let errFunc = ( err: Error | any ) => rej( err );
-
             this.socket
-                .once( 'error', errFunc )
                 .connect( port, host, () =>
-                {
-                    let endCloseFunc = () => { this.connected = false; };
-
-                    this.socket
-                        .removeListener( 'error', errFunc )
-                        .on( 'error', ( err ) => this.emit( 'error', err ) )
-                        .on( 'connect', () => this.onConnect() )
-                        .on( 'close', endCloseFunc )
-                        .on( 'end', endCloseFunc )
-                        .on( 'data', ( data ) => this.onData( data ) );
-
-                    return res( this );
-                } );
+                    // This is where the join request is actually sent
+                    this.socket.write(
+                        U_SafeJSON.stringify( cMB.JoinRequest( this.userName, this.id ) ),
+                        () => res( this )
+                    )
+                );
         } );
+    }
+
+    public send( mess: RS_N_Messages_C.Base )
+    {
+        return new Promise((res, rej)=>
+        {
+            this.socket.write()
+        }
     }
 
     public leave ()
@@ -53,6 +61,17 @@ export class RS_C_UserClient
             res( true );
         } );
 
+    }
+
+    private onEndClose ()
+    {
+        this.connected = false;
+    }
+
+    private onError ( err: Error )
+    {
+        console.log( err );
+        this.emit( 'error', err );
     }
 
     private onConnect ()

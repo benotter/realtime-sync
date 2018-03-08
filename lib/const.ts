@@ -39,17 +39,22 @@ export namespace STRING
 
         USERCLIENT_ALREADY_CONNECTED: "",
     };
+
+    export const INPUT = {
+        GET_HOST: "Enter Remote Host:",
+        GET_USERNAME: "Enter Desired Username:",
+    };
 }
 
 export namespace PROG 
 {
     export const ARGS = {
-        PORT: "--port",
-
         SERVER_MODE: "server",
-        SERVER_HOST: "--host",
-
         CLIENT_MODE: "client",
+        
+        PORT: "--port",
+        HOST: "--host",
+
         CLIENT_USERNAME: "--username",
         CLIENT_ID: "--userID"
     };

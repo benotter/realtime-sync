@@ -1,0 +1,46 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "debug_rs_server",
+
+            "program": "${workspaceFolder}/index.js",
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceFolder}/**/*.js"
+            ],
+            "runtimeArgs": [
+                "--debug-brk",
+            ],
+            "args": [
+                "server"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "debug_rs_client",
+
+            "program": "${workspaceFolder}/index.js",
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceFolder}/**/*.js"
+            ],
+            "runtimeArgs": [
+                "--debug-brk",
+            ],
+            "args": [
+                "client",
+                "--host",
+                "localhost",
+                "--username",
+                "test"
+            ]
+        }
+    ]
+}

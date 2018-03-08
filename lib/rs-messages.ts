@@ -74,7 +74,7 @@ export namespace RS_N_Messages_S
         success: boolean;
         message?: string;
         serverName?: string;
-        userList?: string[];
+        userList?: { userID: string, userName: string }[];
     }
 
     export interface AddFileReponse extends Base { }
