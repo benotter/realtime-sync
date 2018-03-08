@@ -6,7 +6,6 @@
     "directories": {
         "lib": "lib"
     },
-    
     "scripts": {
         "start": "node ./index.js",
         "install": "npm run build",
@@ -32,6 +31,8 @@
         "typescript": "^2.7.2"
     },
     "dependencies": {
+        "@types/redux": "^3.6.0",
+        "redux": "^3.7.2",
         "uuid": "^3.2.1"
     }
 }
