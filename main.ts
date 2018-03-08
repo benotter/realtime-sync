@@ -88,15 +88,7 @@ function exitGood ( mess: string | void = void 0 )
 
 function startServer ( port: number, host: string )
 {
-    let server = new RS_C_Server( port, host );
     
-    server
-        .on( 'error', ( err ) => console.log( err ) )
-        .on( 'user-join', ( data ) => console.log( 'User Joined!' ) )
-        .on( 'user-leave', ( data ) => console.log( 'User Left!' ) )
-        .start()
-        .then( () => console.log( "Server Started Successfully!" ) )
-        .catch( err => exitBad( err ) );
 }
 
 function startClient ( port: number, host: string | "", userName: string | null, id: string | null ): any
@@ -125,13 +117,4 @@ function startClient ( port: number, host: string | "", userName: string | null,
         } );
 
     rl.close();
-
-    let client = new RS_C_Client( userName, id || void 0 );
-
-    client.join( host, port )
-        .then( () => 
-        {
-            console.log( "Joined Host Successfully!" );
-        } )
-        .catch( err => exitBad( err ) );
 }
