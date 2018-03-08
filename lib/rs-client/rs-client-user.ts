@@ -4,12 +4,14 @@ import { RS_C_UserBase, RS_T_UserID, } from '../rs-user-base';
 import { RS_E_ClientMessageType, RS_E_ServerMessageType, RS_N_Messages_S } from '../rs-messages';
 import * as CONST from '../const';
 
-export class RS_C_UserClient extends RS_C_UserBase
+export class RS_C_UserClient
+    extends RS_C_UserBase
+    implements RS_C_UserBase
 {
     public connected: boolean = false;
-    constructor ( userName: string )
+    constructor ( userName: string, id: string | void = void 0 )
     {
-        super( userName, false );
+        super( userName, false, void 0, id as string );
     }
 
     public join ( host: string, port: number )
@@ -38,6 +40,19 @@ export class RS_C_UserClient extends RS_C_UserBase
                     return res( this );
                 } );
         } );
+    }
+
+    public leave ()
+    {
+        return new Promise( ( res, rej ) =>
+        {
+            if ( !this.connected )
+                return rej( new Error() );
+
+            this.socket.end();
+            res( true );
+        } );
+
     }
 
     private onConnect ()
@@ -84,7 +99,7 @@ export class RS_C_UserClient extends RS_C_UserBase
     }
 }
 
-declare class RSUserClient 
+export declare interface RS_C_UserClient 
 {
     emit ( event: 'error', data: Error ): boolean;
     on ( event: 'error', listener: ( data: Error ) => void ): this;

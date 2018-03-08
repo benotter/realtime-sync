@@ -3,7 +3,9 @@ import { U_SafeJSON } from '../util';
 import { RS_E_ClientMessageType, RS_N_Messages_C } from '../rs-messages';
 import { RS_C_UserBase, } from '../rs-user-base';
 
-export class RS_C_UserServer extends RS_C_UserBase
+export class RS_C_UserServer
+    extends RS_C_UserBase
+    implements RS_C_UserServer
 {
     public joined: boolean = false;
     public disconnected: boolean = false;

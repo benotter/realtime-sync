@@ -1,12 +1,13 @@
 import { RS_C_File } from "./rs-file-base";
 
-export enum RS_E_ClientMessageType 
+export const enum RS_E_ClientMessageType 
 {
     Base,
     Leave_Report,
 
     Join_Request,
     AddFile_Request,
+    Info_Update,
     RemFile_Request,
     UpdateFile_Request,
 }
@@ -48,7 +49,7 @@ export namespace RS_N_Messages_C
     }
 }
 
-export enum RS_E_ServerMessageType 
+export const enum RS_E_ServerMessageType 
 {
     Base,
 

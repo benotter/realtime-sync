@@ -11,7 +11,7 @@ import { RS_C_File, } from '../rs-file-base';
 import { RS_C_UserServer, } from './rs-server-user';
 import * as CONST from '../const'
 
-export class RSServer extends EventEmitter
+export class RS_C_Server extends EventEmitter
 {
     public server: net.Server = net.createServer();
 
@@ -68,11 +68,7 @@ export class RSServer extends EventEmitter
         return new Promise( ( res, rej ) =>
         {
             if ( this.serverStarted )
-                this.server.close( () => 
-                {
-                    this.log.info( CONST.LOG.SERVER_STOP );
-                    res( true );
-                } );
+                this.server.close( () => res( true ) );
             else
                 rej( new Error( "Server Not Started!" ) );
         } );
@@ -169,4 +165,22 @@ export class RSServer extends EventEmitter
     {
         let { userID, fileID, } = mess;
     }
+}
+
+export declare interface RS_C_Server 
+{
+    emit ( event: "user-join", data: any ): boolean;
+    on ( event: "user-join", listener: ( data: any ) => void ): this;
+
+    emit ( event: "user-leave", data: any ): boolean;
+    on ( event: "user-leave", listener: ( data: any ) => void ): this;
+
+    emit ( event: "file-added", data: any ): boolean;
+    on ( event: "file-added", listener: ( data: any ) => void ): this;
+
+    emit ( event: "file-removed", data: any ): boolean;
+    on ( event: "file-removed", listener: ( data: any ) => void ): this;
+
+    emit ( event: "file-updated", data: any ): boolean;
+    on ( event: "file-updated", listener: ( data: any ) => void ): this;
 }

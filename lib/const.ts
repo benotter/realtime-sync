@@ -1,3 +1,14 @@
+export namespace DEFAULTS
+{
+    export const PORT = 8117;
+    export const SERVER = {
+        HOST: ''
+    };
+    export const CLIENT = {
+
+    };
+}
+
 export namespace NETWORK 
 {
     export const DEFAULT_PORT: number = 8117;
@@ -27,5 +38,19 @@ export namespace STRING
         USERID_ID_DOESNT_MATCH: "",
 
         USERCLIENT_ALREADY_CONNECTED: "",
+    };
+}
+
+export namespace PROG 
+{
+    export const ARGS = {
+        PORT: "--port",
+
+        SERVER_MODE: "server",
+        SERVER_HOST: "--host",
+
+        CLIENT_MODE: "client",
+        CLIENT_USERNAME: "--username",
+        CLIENT_ID: "--userID"
     };
 }

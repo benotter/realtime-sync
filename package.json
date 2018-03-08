@@ -6,11 +6,14 @@
     "directories": {
         "lib": "lib"
     },
+    
     "scripts": {
+        "start": "node ./index.js",
         "install": "npm run build",
         "build": "tsc -p .",
         "build-watch": "tsc -w -p .",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "gen-types": "dts-generator --name @otter-co/realtime-sync --project ./ --out ./types/realtime-sync.d.ts"
     },
     "repository": {
         "type": "git",
@@ -22,10 +25,13 @@
         "url": "https://github.com/benotter/realtime-sync/issues"
     },
     "homepage": "https://github.com/benotter/realtime-sync#readme",
-    "dependencies": {
+    "devDependencies": {
+        "dts-generator": "^2.1.0",
         "@types/node": "^7.0.43",
         "@types/uuid": "^3.4.3",
-        "typescript": "^2.7.2",
+        "typescript": "^2.7.2"
+    },
+    "dependencies": {
         "uuid": "^3.2.1"
     }
 }
