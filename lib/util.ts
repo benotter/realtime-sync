@@ -1,7 +1,7 @@
 import
 {
-    RS_E_ClientMessageType as cT,
-    RS_E_ServerMessageType as sT,
+    RS_E_MessageTypes_C as cT,
+    RS_E_MessageTypes_S as sT,
     RS_N_Messages_C as cM,
     RS_N_Messages_S as sM,
 } from './rs-messages';

@@ -8,5 +8,13 @@ export type RS_T_UserID = string;
 
 export class RS_C_User_B extends EventEmitter
 {
+    public filesOwned: RS_T_FileID[] =[];
     
+    constructor(
+        public name: string,
+        public id: RS_T_UserID,
+    )
+    {
+        super()
+    }
 }
