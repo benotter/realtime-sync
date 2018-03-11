@@ -1,10 +1,12 @@
+import * as uuid from 'uuid';
 import
 {
-    RS_E_MessageTypes_C as cT,
-    RS_E_MessageTypes_S as sT,
-    RS_N_Messages_C as cM,
-    RS_N_Messages_S as sM,
+    RS_T_Message,
+    RS_T_MessageID,
+    RS_E_MessageTypes,
+    RS_N_Messages,
 } from './rs-messages';
+import { } from './rs-messages';
 
 export namespace U_SafeJSON
 {
@@ -16,18 +18,21 @@ export namespace U_SafeJSON
 
     export function stringify ( obj: any, prettyPrint: boolean = false ): string
     {
-        return JSON.stringify( obj, void 0, prettyPrint ? ' ' : void 0 );
+        return JSON.stringify( obj, void 0, prettyPrint ? '    ' : void 0 );
     }
 }
 
-export namespace U_MessageBuilder_C
+export namespace U_MessageBuilder
 {
-    export const baseObj = ( type: cT ): cM.BaseRequest => ( { type } );
+    export const baseObj = (
+        type: RS_E_MessageTypes,
+        id: RS_T_MessageID = uuid.v4(),
+        payload: any = {}
+    ): RS_T_Message => ( {
+        id,
+        type,
+        payload,
+    } );
 
-    
-}
 
-export namespace U_MessageBuilder_S 
-{
-    export const baseObj = ( type: sT ): sM.BaseResponse => ( { type } );
 }

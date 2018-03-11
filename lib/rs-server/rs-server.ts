@@ -5,26 +5,35 @@ import { EventEmitter } from 'events';
 import * as redux from 'redux';
 // Const and utilities
 import * as CONST from '../const'
-import { U_SafeJSON, U_MessageBuilder_S as sMB } from '../util';
-// Other 'up-one' imports
+import { U_SafeJSON, U_MessageBuilder as sMB } from '../util';
+// Other local imports
 import
 {
-    RS_E_MessageTypes_S,
-    RS_N_Messages_S,
-    RS_E_MessageTypes_C,
-    RS_N_Messages_C
+    RS_T_Message,
+    RS_T_MessageID,
+    RS_N_Messages,
+    RS_E_MessageTypes,
 } from '../rs-messages';
 import { RS_C_File, } from '../rs-file-base';
-// Local dir imports
 import { RS_C_User_S, } from './rs-server-user';
 import serverReducer, { RS_I_ServerState } from '../state/server/server-reducer';
 
 
+export declare interface RS_C_Server 
+{
+    emit ( e: 'error', err: Error ): boolean;
+    on ( e: 'error', l: ( err: Error ) => void ): this;
+}
+
 export class RS_C_Server extends EventEmitter
 {
+    private _workTickRate = 20;
+    private _workTickTimer: NodeJS.Timer | null = null;
+
     // State Store
     private _store: redux.Store<RS_I_ServerState> = redux.createStore<RS_I_ServerState>( serverReducer );
-    private _storeUnSubFunc: redux.Unsubscribe | null = null;
+    private _thinkTickUnsubFunc: redux.Unsubscribe | null = null;
+
 
     // built-in 'net' module server.
     private _server: net.Server = net.createServer();
@@ -55,11 +64,8 @@ export class RS_C_Server extends EventEmitter
         if ( this.serverStarted )
             throw new Error(); // @TODO - Add Error Message
 
-        // Subscribe to store changes for tick func, (This should be fun)
-        this._storeUnSubFunc =
-            this._store.subscribe(
-                () => this.onTick( this._store.getState() )
-            );
+        this.hookThinkTick();
+        this.hookWorkTick();
 
         this._server.listen( port, host ? host : void 0 );
     }
@@ -69,46 +75,91 @@ export class RS_C_Server extends EventEmitter
         if ( !this.serverStarted )
             throw new Error(); // @TODO - Error Logging
 
-        if ( this._storeUnSubFunc )
+        this.unhookThinkTick();
+        this.unhookWorkTick();
+
+        this._server.close();
+    }
+
+
+    private hookThinkTick ()
+    {
+        if ( this._thinkTickUnsubFunc )
+            throw new Error(); // @TODO - add error message;
+
+        this._thinkTickUnsubFunc = this._store.subscribe( () => this.onThinkTick( this._store.getState() ) );
+    }
+
+    private unhookThinkTick ()
+    {
+        if ( this._thinkTickUnsubFunc )
         {
-            this._storeUnSubFunc();
-            this._storeUnSubFunc = null;
+            this._thinkTickUnsubFunc();
+            this._thinkTickUnsubFunc = null;
         }
     }
 
-    public onError ( err: Error )
+    private hookWorkTick ()
+    {
+        if ( this._workTickTimer )
+            throw new Error(); // @TODO - Add Error Message;
+
+        this._workTickTimer = setTimeout(
+            () => this.onWorkTick( this._store.getState() ),
+            this._workTickRate
+        );
+    }
+
+    private unhookWorkTick ()
+    {
+        if ( this._workTickTimer )
+        {
+            clearTimeout( this._workTickTimer );
+            this._workTickTimer = null;
+        }
+    }
+
+    private onError ( err: Error ) { }
+    private onConnection ( socket: net.Socket ) { }
+    private onClose () { }
+    private onListening () { }
+
+
+    private onThinkTick ( state: RS_I_ServerState )
     {
 
     }
 
-    public onConnection ( socket: net.Socket )
-    {
-
-    }
-
-    public onClose ()
-    {
-
-    }
-
-    public onListening ()
-    {
-
-    }
-
-    public onTick ( state: RS_I_ServerState | false )
+    private async onWorkTick ( state: RS_I_ServerState | false )
     {
         if ( !state )
             throw new Error(); // @TODO - Add Error Logging
 
         let {
             settings,
+            messages,
         } = state;
+
+        if ( messages.newMessages.length > 0 )
+        {
+            let newMs = await Helpers.getMessages( messages.messageList, messages.newMessages );
+        }
 
     }
 }
 
-export declare interface RS_C_Server 
+namespace Helpers 
 {
-    on ( e: 'error', l: ( err: Error ) => void ): this;
+    export async function getMessages ( messL: RS_T_Message[], messIDs: RS_T_MessageID[] )
+    {
+        return messIDs.reduce(
+            ( ret, mID ) => 
+            {
+                let m = messL.find( m => m.id === mID );
+                if ( m )
+                    ret.push( m );
+                return ret;
+            }, [] as RS_T_Message[] );
+    }
 }
+
