@@ -19,8 +19,8 @@ export namespace RS_N_Settings_Actions_S
         aT = RS_E_Settings_ActionTypes_S;
 
     export let setStandAlone =
-        ( standAlone: boolean ): RS_I_Settings_Actions_S.SetStandAloneAct =>
-            ( { type: aT.SetStandAlone, standAlone } );
+        ( standalone: boolean ): RS_I_Settings_Actions_S.SetStandAloneAct =>
+            ( { type: aT.SetStandAlone, standalone } );
 
     export let setHostUser =
         ( userID: RS_T_UserID ): RS_I_Settings_Actions_S.SetHostUserAct =>
@@ -47,7 +47,7 @@ export namespace RS_I_Settings_Actions_S
 {
     export type BaseAct = { type: RS_E_Settings_ActionTypes_S };
 
-    export type SetStandAloneAct = BaseAct & { standAlone: boolean; };
+    export type SetStandAloneAct = BaseAct & { standalone: boolean; };
     export type SetHostUserAct = BaseAct & { userID: RS_T_UserID; };
 
     export type SetServerNameAct = BaseAct & { serverName: string | null; };

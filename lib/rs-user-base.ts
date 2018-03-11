@@ -4,7 +4,7 @@ import * as uuid from 'uuid';
 import { U_SafeJSON } from './util';
 import { RS_T_FileID } from './rs-file-base';
 
-export type RS_T_UserID = string;
+export type RS_T_UserID<T ={}> = T & string;
 
 export class RS_C_User_B extends EventEmitter
 {

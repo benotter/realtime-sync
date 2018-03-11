@@ -12,7 +12,7 @@ export interface RS_I_SettingsState_S
     hostUser: RS_T_UserID | null;
 
     serverName: string;
-    serverGreeting: string | null;
+    serverMessage: string | null;
 
     adminUsers: RS_T_UserID[];
 }
@@ -26,16 +26,46 @@ export default function RS_R_SettingsReducer_S
     switch ( act.type )
     {
         case sAT.SetStandAlone:
-            return Object.assign({}, state, {});
-            
+            {
+                let { standalone } = act as sI.SetStandAloneAct;
+
+                return Object.assign( {}, state, { standalone } as RS_I_SettingsState_S );
+            }
         case sAT.SetHostUser:
-
+            {
+                let { userID } = act as sI.SetHostUserAct;
+                return Object.assign( {}, state, {
+                    hostUser: userID,
+                } as RS_I_SettingsState_S );
+            }
         case sAT.SetServerName:
+            {
+                let { serverName } = act as sI.SetServerNameAct;
+                return Object.assign( {}, state, {
+                    serverName,
+                } as RS_I_SettingsState_S );
+            }
         case sAT.SetServerMessage:
-
+            {
+                let { serverMessage } = act as sI.SetServerMessageAct;
+                return Object.assign( {}, state, {
+                    serverMessage,
+                } as RS_I_SettingsState_S );
+            }
         case sAT.AddAdmin:
+            {
+                let { userID } = act as sI.AddAdminAct;
+                return Object.assign( {}, state, {
+                    adminUsers: [ ...state.adminUsers, userID ]
+                } as RS_I_SettingsState_S );
+            }
         case sAT.RemAdmin:
-        
+            {
+                let { userID } = act as sI.RemAdminAct;
+                return Object.assign( {}, state, {
+                    adminUsers: state.adminUsers.filter( uID => uID !== userID ),
+                } as RS_I_SettingsState_S );
+            }
         default:
             return state;
     }
@@ -50,7 +80,7 @@ function RS_GetInitialSettingsState (
         hostUser: null,
 
         serverName: "Realtime-Sync Server",
-        serverGreeting: null,
+        serverMessage: null,
 
         adminUsers: [],
     }, preLoad );

@@ -1,12 +1,8 @@
-// Built-ins
 import * as net from 'net';
 import { EventEmitter } from 'events';
-// 3P's
 import * as redux from 'redux';
-// Const and utilities
 import * as CONST from '../const'
 import { U_SafeJSON, U_MessageBuilder as sMB } from '../util';
-// Other local imports
 import
 {
     RS_T_Message,
@@ -27,17 +23,16 @@ export declare interface RS_C_Server
 
 export class RS_C_Server extends EventEmitter
 {
-    private _workTickRate = 20;
     private _workTickTimer: NodeJS.Timer | null = null;
+    private _thinkTickUnsubFunc: redux.Unsubscribe | null = null;
 
     // State Store
     private _store: redux.Store<RS_I_ServerState> = redux.createStore<RS_I_ServerState>( serverReducer );
-    private _thinkTickUnsubFunc: redux.Unsubscribe | null = null;
-
-
     // built-in 'net' module server.
     private _server: net.Server = net.createServer();
 
+    // Preset Config Values
+    private _workTickRate = 20;
     private _port: number = 8771;
     private _host: string = "";
 
@@ -48,7 +43,7 @@ export class RS_C_Server extends EventEmitter
         );
     }
 
-    constructor () 
+    constructor ()
     {
         super();
 
@@ -64,21 +59,14 @@ export class RS_C_Server extends EventEmitter
         if ( this.serverStarted )
             throw new Error(); // @TODO - Add Error Message
 
-        this.hookThinkTick();
-        this.hookWorkTick();
-
-        this._server.listen( port, host ? host : void 0 );
+        return await ( new Promise( res => this._server.listen( port, host ? host : void 0, res ) ) );
     }
-
     public async stop ()
     {
         if ( !this.serverStarted )
             throw new Error(); // @TODO - Error Logging
 
-        this.unhookThinkTick();
-        this.unhookWorkTick();
-
-        this._server.close();
+        return await ( new Promise( res => this._server.close( res ) ) );
     }
 
 
@@ -89,7 +77,6 @@ export class RS_C_Server extends EventEmitter
 
         this._thinkTickUnsubFunc = this._store.subscribe( () => this.onThinkTick( this._store.getState() ) );
     }
-
     private unhookThinkTick ()
     {
         if ( this._thinkTickUnsubFunc )
@@ -98,18 +85,13 @@ export class RS_C_Server extends EventEmitter
             this._thinkTickUnsubFunc = null;
         }
     }
-
     private hookWorkTick ()
     {
         if ( this._workTickTimer )
             throw new Error(); // @TODO - Add Error Message;
 
-        this._workTickTimer = setTimeout(
-            () => this.onWorkTick( this._store.getState() ),
-            this._workTickRate
-        );
+        this._workTickTimer = setTimeout( () => this.onWorkTick( this._store.getState() ), this._workTickRate );
     }
-
     private unhookWorkTick ()
     {
         if ( this._workTickTimer )
@@ -119,12 +101,22 @@ export class RS_C_Server extends EventEmitter
         }
     }
 
-    private onError ( err: Error ) { }
-    private onConnection ( socket: net.Socket ) { }
-    private onClose () { }
-    private onListening () { }
+    private onError ( err: Error ) { this.emit( 'error', err ); }
+    private onClose () 
+    { 
+        this.hookThinkTick();
+        this.hookWorkTick();
+    }
+    private onListening () 
+    {
+        this.unhookThinkTick();
+        this.unhookWorkTick();
+    }
 
+    private onConnection ( socket: net.Socket ) 
+    {
 
+    }
     private onThinkTick ( state: RS_I_ServerState )
     {
 
@@ -138,6 +130,7 @@ export class RS_C_Server extends EventEmitter
         let {
             settings,
             messages,
+            files,
         } = state;
 
         if ( messages.newMessages.length > 0 )
